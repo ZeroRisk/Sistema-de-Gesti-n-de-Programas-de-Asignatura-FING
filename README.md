@@ -1,1 +1,1 @@
-# Sistema-de-Gesti-n-de-Programas-de-Asignatura-FING
+# Sistema-de-Gestion-de-Programas-de-Asignatura-FING
