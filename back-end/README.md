@@ -1,18 +1,18 @@
 # Back de la Aplicacion
 
-## guia de instalación
+## guia de instalaciÃ³n
 
 
 
 ``` bash
 
+# 1Âº Python version 3.0 en adelante debe estar instalado en el equipo
 
-# 1º instalar pip install flask
+# 2Âº instalar pip install flask
 
+# 3Âº instalar pip install flask-mysqldb
 
-# 2º instalar pip install flask-mysqldb
-
-# 3º para correr GBJ.py, ingresar en la consola (en el directorio correspondiente): python3 GBJ.py 
+# 4Âº para correr GBJ.py, ingresar en la consola (en el directorio correspondiente): python3 GBJ.py 
 
 
 ```
