@@ -438,6 +438,7 @@ def getAsginaturaPlan():
 #----------------------------------------------#
 
 
+# Busqueda de datos por id PLAN
 @app.route("/datosplanasig", methods=['GET'])
 def getDatosPlanAsig():
 	idplan = request.args.get('id_plan')
@@ -446,7 +447,10 @@ def getDatosPlanAsig():
 	cursor.execute("SELECT P.resolucion,P.idplan_estudio, A.idasignatura, A.codigo, A.nombreAsignatura, A.horasT, A.horasE, A.horasL, A.sct, A.tipo, A.requisitos, A.nivel FROM plan_estudio P, asignatura A,plan_asignatura C WHERE C.plan_estudio_idplan_estudio="+idplan+" AND C.asignatura_idasignatura="+idasignatura+" AND P.idplan_estudio = C.plan_estudio_idplan_estudio")
 	data= [dict((cursor.description[i][0], value)
          for i, value in enumerate(row)) for row in cursor.fetchall()]
-	return jsonify({'datos' : data})
+	cursor.execute("SELECT detalle_programa_iddetalle_programa FROM programa WHERE asignatura_idasignatura="+idasignatura)
+	dataDetalle= [dict((cursor.description[i][0], value)
+         for i, value in enumerate(row)) for row in cursor.fetchall()]
+	return jsonify({'datos' : data, 'id_detalle' : dataDetalle})
 
 #----------------------------------------------#
 # LOS SERVICIOS DE AUTENTIFICACION DEL SISTEMA #

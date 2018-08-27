@@ -24,58 +24,61 @@
     <table class="bloque1">
     <table class="tabla1">
     <td align="left">Resolución</td>
-    <td  align="left" class="texto_input" ref="resolucion">{{dato.resolucion}}</td>
+    <td  align="left"><input type="text" readonly class="texto_input" ref="resolucion" :value="dato.resolucion"></td>
     
     <tr>
       <td>Carrera :</td>
-      <td colspan="7" id="carreraNombre" class="texto_input" ref="carrera">{{detallePrograma[0].carrera}}</td>
+      <td ><input type="text" readonly id="carreraNombre" class="texto_input" ref="carrera" :value="detallePrograma[0].carrera"></td>
     </tr>
     <tr>
-      <td>ASIGNATURA :</td>
-      <td colspan="7"  class="texto_input" ref="asignatura">{{dato.nombreAsignatura}}</td>
+      <td>Asignatura :</td>
+      <td ><input type="text" readonly class="texto_input" ref="asignatura" :value="dato.nombreAsignatura"></td>
     </tr>
     <tr>
-      <td>CÓDIGO :</td>
-      <td  class="texto_input" width="50" height="16" ref="codigo">{{dato.codigo}}</td>
-      <td >T: </td>
-      <td  class="texto_input" width="50" height="16" ref="T">{{dato.horasT}}</td>
-      <td>E: </td>
-      <td  class="texto_input" width="50" height="16" ref="E">{{dato.horasE}}</td>
-      <td>L: </td>
-      <td class="texto_input" width="50" height="16" ref="L">{{dato.horasL}}</td>
+      <td>Código :</td>
+      <td><input type="text"  readonly class="texto_input" width="50" height="16" ref="codigo" :value="dato.codigo"></td>
+    </tr>
+    <tr>  
+      <td align="right" >T: </td>
+      <td><input type="text"  readonly class="texto_input"  style="width:35px;" ref="T" :value="dato.horasT">
+      E:<input type="text"  readonly class="texto_input"  style="width:35px;" ref="E" :value="dato.horasE">
+      L:<input type="text" readonly class="texto_input"  style="width:35px;" ref="L" :value="dato.horasL"></td>
     </tr>
     <tr>
-      <td>REQUISITOS: </td>
-      <td colspan="7" class="texto_input" ref="requisitos">{{dato.requisitos}}</td>
+      <td>Requisitos: </td>
+      <td ><input type="text" readonly class="texto_input" ref="requisitos" :value="dato.requisitos"></td>
     </tr>
     <tr>
-      <th align="left">DICTA DEPARTAMENTO: </th>
-      <td colspan="7"  class="texto_input" ref="dicta_departamento">Departamento Mecánica</td>
+      <td align="left">Dicta Departamento: </td>
+      <td ><input type="text"  readonly class="texto_input" ref="dicta_departamento" value="Departamento Mecánica"></td>
     </tr>
     <tr>
-      <th align="left">AÑO - SEMESTRE - NIVEL: </th>
-      <td  colspan="7" contenteditable="true" class="texto_input" ref="annio_semestre_nivel">2018-1-1</td>
+      <td align="left">Año - Semestre - Nivel: </td>
+      <td  ><input type="text" readonly  class="texto_input" ref="annio_semestre_nivel" value="2018-1-1"></td>
     </tr>
     <tr>
-      <th align="left">Tipo: </th>
-      <td colspan="7"  class="texto_input" ref="categoria">{{dato.tipo}}</td>
+      <td align="left">Tipo: </td>
+      <td  ><input type="text" readonly class="texto_input" ref="categoria" :value="dato.tipo"></td>
     </tr>
     <tr>
-      <th align="left" >HORAS PRESENCIALES A LA SEMANA: </th>
-      <td colspan="7" contenteditable="true" class="texto_input" ref="horas_presenciales_a_la_semana">{{detallePrograma[0].horasPre}}</td>
+      <td align="left" >Horas presenciales: </td>
+      <td ><input type="text"  readonly class="texto_input" id="horas_presenciales_a_la_semana" ref="horas_presenciales_a_la_semana" :value="detallePrograma[0].horasPre"></td>
     </tr>
     <tr>
-      <th align="left">PERFIL PROFESOR:</th>
-      <td colspan="7" contenteditable="true" class="texto_input" ref="perfil_profesor">{{detallePrograma[0].perfilProfe}}</td>
+      <td align="left">Perfil profesor:</td>
+      <td ><input type="text"  class="texto_input" ref="perfil_profesor" :value="detallePrograma[0].perfilProfe"></td>
     </tr>
     <tr>
     <td align="right">SCT</td>
-      <td  class="texto_input" ref="SCT">{{dato.sct}}</td>
+      <td><input type="text" readonly  class="texto_input" ref="SCT" :value="dato.sct"></td>
+    </tr>
+    <tr>
       <td align="left">Versión</td>
-      <td contenteditable="true" class="texto_input" ref="version">{{detallePrograma[0].version}}</td>
+      <td><input type="text" readonly class="texto_input" ref="version" :value="detallePrograma[0].version"></td>
     </tr>
   </table>
   </table>
+  
     <!-- 
       Descripcion y objetivos de la asignatura
     -->
@@ -285,6 +288,7 @@ export default {
   desde la pagina MenuPrograma
    */
   mounted: function (){ 
+      this.cantUnid = 0;
       if(this.type != "Admin"){ 
         this.isAdmin=false 
       }
@@ -371,6 +375,7 @@ export default {
 
           //Unidades
           var tamanoU= this.dataU.length;
+          console.log("tamano unidades ya escritas "+tamanoU)
           if (tamanoU!=0){
             for (var i=0;i<tamanoU;i++){
               this.agregarUnidades(this.dataU[i]);
@@ -595,7 +600,6 @@ export default {
       Funcion que reune la informacion para guardarla
      */
     saveData: function(event){
-      console.log( this.$refs.descripcion_de_la_asignatura) 
       //this.carrera = detallePrograma[0].carrera
       this.codigo = this.$refs.codigo.textContent
       this.HT = this.$refs.T.textContent
@@ -605,8 +609,10 @@ export default {
       this.dictaDepartamento = "Departamento Mecanica"
       this.fechaDictado = "2018-1-1"
       this.categoria = this.Datos[0].tipo
-      this.hrspresenciales = "8"
-      //this.$refs.horas_presenciales_a_la_semana.textContent
+      this.hrspresenciales = document.getElementById("horas_presenciales_a_la_semana").value;
+      // this.$refs.horas_presenciales_a_la_semana.textContent
+      console.log("horas presenciales a guardar "+this.hrspresenciales)
+      console.log("algo como HT "+this.HT)
       this.perfil_profesor = "Cool profe"
       //this.$refs.perfil_profesor.textContent
       this.version = "version1"
@@ -909,7 +915,7 @@ export default {
           var espacio3 = document.createElement("br");
           divUnid.appendChild(espacio3);
           var campoSU= document.createElement("P");
-          var textoSU = document.createTextNode("Subunidades ");
+          var textoSU = document.createTextNode("Subunidades Unidad "+cantU);
           campoSU.appendChild(textoSU);
           divUnid.appendChild(campoSU);
           //Crea boton para agregar sub-unidadeds
@@ -976,12 +982,13 @@ export default {
 .tabla1 , th, td {
    border: 0px solid #1700ea3b;
   
-  height: 0px;
+  
   
 }
 .texto_input{
-  background-color: #ffffff48;
-  
+  background-color: #ffffffde;
+  height: 20px;
+  font-size: 18px;
 }
 .tabla{ position:relative; top:80px; left: 350px; 
   }
