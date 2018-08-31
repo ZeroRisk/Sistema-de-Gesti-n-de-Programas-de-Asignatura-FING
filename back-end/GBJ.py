@@ -13,6 +13,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 mysql.init_app(app)
 
 
+
 @app.route("/")
 def home():
 	return 'HELLO WORLD! '
