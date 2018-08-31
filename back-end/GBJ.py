@@ -6,8 +6,8 @@ mysql = MySQL()
 app = Flask(__name__)
 CORS(app)
 # Datos de configuracion de la app. Principalmente de la conexión a MySql. 
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_USER'] = 'linclontaller'
+app.config['MYSQL_PASSWORD'] = 'darklugia'
 app.config['MYSQL_DB'] = 'mydb'
 app.config['MYSQL_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -453,6 +453,74 @@ def getDatosPlanAsig():
 	return jsonify({'datos' : data, 'id_detalle' : dataDetalle})
 
 #----------------------------------------------#
+# Funcion: Busqueda de asignatura por codigo y nombre.
+#          Retorna el id de la asignatura.
+#
+# Entrada: codigo de la asignatura ("codigoAsig").
+#          nombre de la asignatura ("nombreAsig")
+#          Se entrega mediante url.
+#
+# Salida: Objeto json conteniendo el id de la asignatura.
+#----------------------------------------------#
+
+
+@app.route("/asignaturaCN", methods=['GET'])
+def getAsignaturaCN():
+    codigo = request.args.get('codigoAsig')
+    nombre = request.args.get('nombreAsig')
+    tipo = request.args.get('tipoAsig')
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT idasignatura from asignatura WHERE codigo = '"+codigo+"' AND nombreAsignatura = '"+nombre+"' AND tipo = '"+tipo+"'")
+    data= [dict((cursor.description[i][0], value)
+         for i, value in enumerate(row)) for row in cursor.fetchall()]
+    return jsonify({'asignatura' : data})
+
+#----------------------------------------------#
+# Funcion: Busqueda de plan de estudio por resolución e id admin. 
+#          Retorna el id del plan de estudio.
+#
+# Entrada: resolucion del plan de estudio ("resolucion").
+#          id del admin que crea el plan de estudio ("idadmin")
+#          Se entrega mediante url.
+#
+# Salida: Objeto json conteniendo el id del plan de estudio.
+#----------------------------------------------#
+
+
+@app.route("/planRiA", methods=['GET'])
+def getPlanRiA():
+    resolucion = request.args.get('resolucion')
+    idcarrera = request.args.get('idcarrera')
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT idplan_estudio from plan_estudio WHERE resolucion = '"+resolucion+"' AND carrera_idcarrera = "+idcarrera+"")
+    data= [dict((cursor.description[i][0], value)
+         for i, value in enumerate(row)) for row in cursor.fetchall()]
+    return jsonify({'plan' : data})
+
+#----------------------------------------------#
+# Funcion: Busqueda de carrera por nombre de la carrera. 
+#          Retorna el id de la carrera.
+#
+# Entrada: nombre de la carrera ("nombrecarrera").
+#          Se entrega mediante url.
+#
+# Salida: Objeto json conteniendo el id de la carrera.
+#----------------------------------------------#
+
+
+@app.route("/carreraN", methods=['GET'])
+def getCarreraN():
+    nombrecarrera = request.args.get('nombrecarrera')
+
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT idcarrera from carrera WHERE nombreCarrera = '"+nombrecarrera+"'")
+    data= [dict((cursor.description[i][0], value)
+         for i, value in enumerate(row)) for row in cursor.fetchall()]
+    return jsonify({'carrera' : data})
+
+#----------------------------------------------#
 # LOS SERVICIOS DE AUTENTIFICACION DEL SISTEMA #
 #----------------------------------------------#
 
@@ -724,7 +792,7 @@ def newPlan():
 		maxID = data[0].get('MAX(idplan_estudio)')
 		print(maxID)
 
-		cursor.execute("INSERT INTO plan_estudio (idplan_estudio,admin_idadmin,resolucion,fecha_resol_dia,fecha_resol_mes,fecha_resol_año,carrera_idcarrera) VALUES (%s,%s,%s,%s,%s,%s,%s)",((maxID)+1,adminid,resol,fech_dia,fech_mes,fech_ano,carreraid))
+		cursor.execute("INSERT INTO plan_estudio (idplan_estudio,admin_idadmin,resolucion,fecha_resol_dia,fecha_resol_mes,fecha_resol_año,carrera_idcarrera) VALUES (%s,%s,%s,%s,%s,%s,%s)",((maxID)+1,adminid,resolu,fech_dia,fech_mes,fech_ano,carreraid))
 		mysql.connection.commit()
 		return "LOCKED AND LOADED"
 
@@ -755,12 +823,44 @@ def newCarrera():
          for i, value in enumerate(row)) for row in cursor.fetchall()]
 		maxID = data[0].get('MAX(idcarrera)')
 		print(maxID)
+
 		cursor.execute("INSERT INTO carrera (idcarrera,nombrecarrera,departamento_iddepartamento) VALUES (%s,%s,%s)",((maxID)+1,carreranombre,carreraiddepto))
 		mysql.connection.commit()
 		return "LOCKED AND LOADED"
 
 	else:
 		return "But nothing happens..."
+
+#----------------------------------------------#
+# Funcion: Inserta un departamento nuevo en el sistema.
+#
+# Entrada: nombre del departamento ("nombredepto").
+#          nombre de la facultad del departamento ("nombrefacultad")
+#          Se entrega mediante url.
+#
+# Salida: Retorna mensaje de exito de realizarse exitosamente el update.
+#----------------------------------------------#
+
+
+@app.route("/newDepartamento", methods=['POST'])
+def newDepartamento():
+    if request.method == 'POST':
+        deptonombre = request.json['nombredepto']
+        facultadnombre = request.json['nombrefacultad']
+        cursor = mysql.connection.cursor()
+
+        cursor.execute("SELECT MAX(iddepartamento) FROM departamento")
+        data= [dict((cursor.description[i][0], value)
+         for i, value in enumerate(row)) for row in cursor.fetchall()]
+        maxID = data[0].get('MAX(iddepartamento)')
+        print(maxID)
+
+        cursor.execute("INSERT INTO departamento (iddepartamento,nombreDepartamento,facultad) VALUES (%s,%s,%s)",((maxID)+1,deptonombre,facultadnombre))
+        mysql.connection.commit()
+        return "LOCKED AND LOADED"
+
+    else:
+        return "But nothing happens..."
 
 
 #----------------------------------------------#
@@ -1027,6 +1127,8 @@ def newAsignatura():
 
 	else:
 		return "But nothing happens..."
+
+
 
 #-------------------------------------------------#
 # LOS SERVICIOS DE INSERT INTERMEDIOS DEL SISTEMA #
