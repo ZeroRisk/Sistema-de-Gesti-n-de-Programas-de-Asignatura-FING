@@ -6,8 +6,8 @@ mysql = MySQL()
 app = Flask(__name__)
 CORS(app)
 # Datos de configuracion de la app. Principalmente de la conexión a MySql. 
-app.config['MYSQL_USER'] = 'linclontaller'
-app.config['MYSQL_PASSWORD'] = 'darklugia'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'mydb'
 app.config['MYSQL_HOST'] = 'localhost'
 mysql.init_app(app)
